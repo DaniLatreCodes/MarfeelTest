@@ -23,7 +23,7 @@ function Search() {
         let user_data = User(username, fullName, avatar_url, bio);
 
         user_section = document.querySelector(".user-container");
-
+        
         if (!user_section) {
           user_section = createElement("section", ["user-container"], [user_data, user_repos]);
           search_wrapper.appendChild(user_section);
