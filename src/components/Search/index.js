@@ -8,44 +8,42 @@ const url = "https://api.github.com/users/";
 
 function Search() {
   let search_wrapper;
+  let user_content_data
 
   async function handleSearch(e) {
     e.preventDefault();
     const inputUserName = e.target[0].value;
-    let user_section
-
+    
     if (inputUserName != "") {
-      const user = await call(`${url + inputUserName}`);
-      if (user) {
-        const { repos_url, login: username, name: fullName, avatar_url, bio } = user;
+      let user_section
+      
+
+      user_section = document.querySelector(".user-content-data");
+      if (user_section) {
+        user_content_data.removeChild(user_content_data.firstChild);
+      }
+        user_section =  createElement("section", ["user-container"])
+        user_content_data.appendChild(user_section)
+      
+      const userApi = await call(`${url + inputUserName}`);
+
+      if (userApi) {
+        
+        const { repos_url, login: username, name: fullName, avatar_url, bio } = userApi;
         const repos = await call(repos_url);
         let user_repos = Repos(repos);
         let user_data = User(username, fullName, avatar_url, bio);
 
-        user_section = document.querySelector(".user-container");
+          user_section.appendChild(user_data).appendChild(user_repos);
+          search_wrapper.appendChild(user_content_data);
         
-        if (!user_section) {
-          user_section = createElement("section", ["user-container"], [user_data, user_repos]);
-          search_wrapper.appendChild(user_section);
-        } else {
-          while (user_section.firstChild) user_section.removeChild(user_section.firstChild);
-          user_section.appendChild(user_data);
-          user_section.appendChild(user_repos);
-        }
       } else {
-        const errorMessage = "Does not exist";
+
         let error_message_display = createElement("p", ["error_message-display"]);
-        error_message_display.innerHTML = errorMessage;
-        user_section = document.querySelector(".user-container");
-        if (!user_section) {
-          console.log('error no user')
-          user_section = createElement("div", ["error-display"], [error_message_display]);
-          search_wrapper.appendChild(user_section);
-        } else {
-          while (user_section.firstChild) user_section.removeChild(user_section.firstChild);
-          user_section.innerHTML = errorMessage;
-          search_wrapper.appendChild(user_section);
-        }
+        let error_display = createElement("div", ["error-display"], [error_message_display]);
+        error_message_display.innerHTML = "Does not exist";
+        user_section.appendChild(error_display);
+        search_wrapper.appendChild(user_content_data);
       }
     }
   }
@@ -60,6 +58,8 @@ function Search() {
 
   let form = createElement("form", ["search-form"], [inputText, inputSubmit]);
   form.onsubmit = handleSearch;
+
+  user_content_data = createElement("article", ["user-content-data"])
 
   search_wrapper = createElement("section", ["search-wrapper"], [form]);
 
