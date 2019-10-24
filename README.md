@@ -1,4 +1,4 @@
-#GitHub UserData app
+# GitHub UserData app
 
 ![D3](https://img.shields.io/badge/4.41.2-webpack-orange)
 ![D3](https://img.shields.io/badge/7.6.4-babel-Yellow)
